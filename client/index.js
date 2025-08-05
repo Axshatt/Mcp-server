@@ -1,5 +1,5 @@
 const readline= require('readline/promises')
-const  GoogleGenAI  = require("@google/genai") 
+const  {GoogleGenAI}  = require('@google/genai') 
 require('dotenv').config();
 
 const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY});
@@ -11,7 +11,7 @@ const rl = readline.createInterface({
     output:process.stdout,   
 })
 
-await main();
+
 async function chatLoop(){
     const question = await rl.question("You: ");
     chatHistory.push({
@@ -24,9 +24,12 @@ async function chatLoop(){
         ]
     })
 
-    const response = await ai.models.generatedContent({
+    const response = await ai.models.generateContent({
         model:"gemini-2.5-flash",
-        content:chatHistory
+        contents:chatHistory
 
     }) 
+    console.log(response.candidates[0].content.parts[0]);
+    
 }
+chatLoop()
