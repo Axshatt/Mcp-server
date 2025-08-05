@@ -15,6 +15,18 @@ await main();
 async function chatLoop(){
     const question = await rl.question("You: ");
     chatHistory.push({
-        
+        role:"user",
+        parts:[
+            {
+                text:question,
+                type:"text"
+            }
+        ]
     })
+
+    const response = await ai.models.generatedContent({
+        model:"gemini-2.5-flash",
+        content:chatHistory
+
+    }) 
 }
