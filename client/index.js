@@ -15,6 +15,11 @@ const rl = readline.createInterface({
 async function chatLoop() {
 
     const question = await rl.question("You: ")
+    if (question.toLowerCase() === "exit") {
+        console.log("Chat ended.");
+        rl.close();
+        process.exit(0);
+    }
     chatHistory.push({
         role: "user",
         parts: [
@@ -24,6 +29,7 @@ async function chatLoop() {
             }
         ]
     })
+
 
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -41,7 +47,10 @@ async function chatLoop() {
         ]
     })
     console.log("AI: " + responseText);
-    
+
+
+
+
     chatLoop()
 
 }
