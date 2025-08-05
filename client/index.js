@@ -13,12 +13,13 @@ const rl = readline.createInterface({
 
 
 async function chatLoop(){
-    const question = await rl.question("You: ");
+    
+    const responseText = response.candidates[0].content.parts[0].text;
     chatHistory.push({
         role:"user",
         parts:[
             {
-                text:question,
+                text:responseText,
                 type:"text"
             }
         ]
@@ -29,7 +30,7 @@ async function chatLoop(){
         contents:chatHistory
 
     }) 
-    console.log("AI: "+response.candidates[0].content.parts[0].text);
+    console.log("AI: "+responseText);
     chatLoop()
     
 }
