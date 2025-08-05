@@ -32,7 +32,7 @@ async function chatLoop() {
     })
     const responseText = response.candidates[0].content.parts[0].text;
     chatHistory.push({
-        role: "user",
+        role: "model",
         parts: [
             {
                 text: responseText,
@@ -41,6 +41,7 @@ async function chatLoop() {
         ]
     })
     console.log("AI: " + responseText);
+    
     chatLoop()
 
 }
