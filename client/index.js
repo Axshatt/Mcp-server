@@ -29,7 +29,8 @@ async function chatLoop(){
         contents:chatHistory
 
     }) 
-    console.log(response.candidates[0].content.parts[0]);
+    console.log("AI: "+response.candidates[0].content.parts[0].text);
+    chatLoop()
     
 }
 chatLoop()
