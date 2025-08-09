@@ -1,6 +1,7 @@
-const readline = require('readline/promises')
-const { GoogleGenAI } = require('@google/genai')
-require('dotenv').config();
+import readline from 'readline/promises';
+import { GoogleGenAI } from '@google/genai';
+import { config } from 'dotenv';
+config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
