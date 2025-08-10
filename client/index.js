@@ -19,7 +19,9 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 })
-const transport = new SSEClientTransport(new URL("http://localhost:3000/sse"))
+const transport = new SSEClientTransport(new URL("http://localhost:3000/sse")).then({
+    
+})
 
 client.connect
 
