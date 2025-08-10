@@ -3,7 +3,6 @@ import { GoogleGenAI } from '@google/genai';
 import { config } from 'dotenv';
 import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js"
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 config();
 
 let tools = []
@@ -43,7 +42,18 @@ await client.connect(transport).then(
     })
 
 
-async function chatLoop() {
+async function chatLoop(toolCall) {
+
+    if(toolCall){
+        const toolResult = await client.callTool({
+            name:toolCall.name,
+            arguments:toolCall.args
+        })
+
+        console.log(toolResult);
+        
+        
+    }
 
     const question = await rl.question("You: ")
     if (question.toLowerCase() === "exit") {
@@ -74,9 +84,14 @@ async function chatLoop() {
         }
 
     })
+    const fnCall = response.candidates[0].content.parts[0].functionCall;
     const responseText = response.candidates[0].content.parts[0].text;
 
     console.log(response.candidates[0].content.parts[0]);
+
+    if(fnCall){
+        return chatLoop(fnCall)
+    }
 
 
 
