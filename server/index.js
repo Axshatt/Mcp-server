@@ -19,17 +19,19 @@ server.tool(
   "addTwoNumbers",
   "Add to number",
   {
-    a:z.number(),
-    b:z.number()
+    a: z.number(),
+    b: z.number()
   },
   {
-    async (arg){
-      const {a,b} = arg;
+    async(arg) {
+      const { a, b } = arg;
 
-      return[{
-        type:"text",
-        text:`The sum of ${a} and ${b} is ${a+b}`
-      }]
+      return {
+        content: [{
+          type: "text",
+          text: `The sum of ${a} and ${b} is ${a + b}`
+        }]
+      }
 
 
     }
@@ -38,7 +40,7 @@ server.tool(
 )
 // Store transports for each session type
 const transports = {
-  sse:{},
+  sse: {},
 }
 
 // Modern Streamable HTTP endpoint
