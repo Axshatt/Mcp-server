@@ -15,29 +15,39 @@ const app = express();
 app.use(express.json());
 
 
-server.tool(
-  "addTwoNumbers",
-  "Add to number",
+server.registerTool("add",
   {
-    a: z.number(),
-    b: z.number()
+    title: "Addition Tool",
+    description: "Add two numbers",
+    inputSchema: { a: z.number(), b: z.number() }
   },
-  {
-    async(arg) {
-      const { a, b } = arg;
+  async ({ a, b }) => ({
+    content: [{ type: "text", text: String(a + b) }]
+  })
+);
 
-      return {
-        content: [{
-          type: "text",
-          text: `The sum of ${a} and ${b} is ${a + b}`
-        }]
-      }
+//   "addTwoNumbers",
+//   "Add to number",
+//   {
+//     a: z.number(),
+//     b: z.number()
+//   },
+//   {
+//     async(arg) {
+//       const { a, b } = arg;
+
+//       return {
+//         content: [{
+//           type: "text",
+//           text: `The sum of ${a} and ${b} is ${a + b}`
+//         }]
+//       }
 
 
-    }
-  }
+//     }
+//   }
 
-)
+// )
 // Store transports for each session type
 const transports = {
   sse: {},
