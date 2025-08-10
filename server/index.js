@@ -1,6 +1,6 @@
 import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+// import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { z } from "zod";
 
@@ -37,7 +37,9 @@ server.tool(
 
 )
 // Store transports for each session type
-const transports = {}
+const transports = {
+  sse:{},
+}
 
 // Modern Streamable HTTP endpoint
 app.all('/mcp', async (req, res) => {

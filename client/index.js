@@ -1,16 +1,17 @@
 import readline from 'readline/promises';
 import { GoogleGenAI } from '@google/genai';
 import { config } from 'dotenv';
-import {Client} from "@modelcontextprotocol/sdk/client/index.js"
-import {SSEClientTransport} from "@modelcontextprotocol/sdk/client/sse.js"
+import { Client } from "@modelcontextprotocol/sdk/client/index.js"
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js"
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 config();
 
-
+let tools = []
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const client = new Client({
-    name:"example-client",
-    version:"1.0.0",
+    name: "example-client",
+    version: "1.0.0",
 })
 
 const chatHistory = [];
@@ -19,11 +20,28 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 })
-const transport = new SSEClientTransport(new URL("http://localhost:3000/sse")).then({
-    
-})
+const transport = new SSEClientTransport(new URL("http://localhost:3000/sse"))
+await client.connect(transport).then(
+    async () => {
+        console.log("Connected to MCP Server");
 
-client.connect
+        tools = (await client.listTools()).tools.map(tool => {
+            return {
+                name: tool.name,
+                description: tool.description,
+                parameters: {
+                    type: tool.inputSchema.type,
+                    properties: tool.inputSchema.properties,
+                    required: tool.inputSchema.required
+                }
+            }
+        })
+
+
+        chatLoop()
+
+    })
+
 
 async function chatLoop() {
 
@@ -45,11 +63,23 @@ async function chatLoop() {
 
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: chatHistory
+        model: "gemini-2.0-flash",
+        contents: chatHistory,
+        config: {
+            tools: [
+                {
+                    functionDeclarations: tools
+                }
+            ]
+        }
 
     })
     const responseText = response.candidates[0].content.parts[0].text;
+
+    console.log(response.candidates[0].content.parts[0]);
+
+
+
     chatHistory.push({
         role: "model",
         parts: [
@@ -67,4 +97,3 @@ async function chatLoop() {
     chatLoop()
 
 }
-chatLoop()
