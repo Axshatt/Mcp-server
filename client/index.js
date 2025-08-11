@@ -44,32 +44,51 @@ await client.connect(transport).then(
 
 async function chatLoop(toolCall) {
 
-    if(toolCall){
+    if (toolCall) {
+        chatHistory.push({
+            role: "model",
+            parts: [
+                {
+                    text: `Calling tool ${toolCall.name}`,
+                    type: "text"
+                }
+            ]
+        })
         const toolResult = await client.callTool({
-            name:toolCall.name,
-            arguments:toolCall.args
+            name: toolCall.name,
+            arguments: toolCall.args
         })
 
-        console.log(toolResult);
-        
-        
-    }
+        chatHistory.push({
+            role: "user",
+            parts: [
+                {
+                    type: "text",
+                    text: `Tool result is ${toolResult.content[0].text}`
+                }
+            ]
+        })
 
-    const question = await rl.question("You: ")
-    if (question.toLowerCase() === "exit") {
-        console.log("Chat ended.");
-        rl.close();
-        process.exit(0);
+
+    } else {
+
+
+        const question = await rl.question("You: ")
+        if (question.toLowerCase() === "exit") {
+            console.log("Chat ended.");
+            rl.close();
+            process.exit(0);
+        }
+        chatHistory.push({
+            role: "user",
+            parts: [
+                {
+                    text: question,
+                    type: "text"
+                }
+            ]
+        })
     }
-    chatHistory.push({
-        role: "user",
-        parts: [
-            {
-                text: question,
-                type: "text"
-            }
-        ]
-    })
 
 
     const response = await ai.models.generateContent({
@@ -89,7 +108,7 @@ async function chatLoop(toolCall) {
 
     console.log(response.candidates[0].content.parts[0]);
 
-    if(fnCall){
+    if (fnCall) {
         return chatLoop(fnCall)
     }
 
